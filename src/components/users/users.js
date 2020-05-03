@@ -6,16 +6,23 @@ import { UserContact } from '../user-contact'
 
 export default class User extends Component {
 
-    state = {
-        step: 1,
-        inside_step: this.props.step,
-        error : null,
-        isLoading: false,
-        order: this.props.order,
-        contact: this.props.contact,
-        address: this.props.address,
-        user: this.props.user,
-        need_confirm: this.props.need_confirm,
+    
+
+    constructor(props) {
+        super(props);
+
+        console.log(this.props.user);
+        this.state = {
+            step: 1,
+            inside_step: this.props.step,
+            error : null,
+            isLoading: false,
+            order: this.props.order,
+            contact: this.props.contact,
+            address: this.props.address,
+            user: this.props.user,
+            need_confirm: this.props.need_confirm,
+        }
     }
 
     updates_inside=()=>{
@@ -138,7 +145,8 @@ export default class User extends Component {
             message = "Order Details"
         }
         if (this.state.inside_step === 4){
-            const { order } = this.state
+
+            const { order } = this.state;
             order.contact = this.state.contact
             order.address = this.state.address
             confirm_order = (

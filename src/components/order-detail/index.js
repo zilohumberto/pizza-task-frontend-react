@@ -40,7 +40,6 @@ export class OrderDetail extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             steps:1,
             isLoading: true,
@@ -101,7 +100,6 @@ export class OrderDetail extends Component {
 
     setRedirect = () => {
         window.location.reload(false);
-        //this.setState({ steps:3 });
     }
 
     get_pizza_name=(item)=>{

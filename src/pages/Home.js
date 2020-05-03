@@ -31,13 +31,13 @@ export default class Home extends Component {
         {
             this.setState({ user: token.User });
         }
-        debugger;
 
         if(this.state.step === 0)
             this.get_pizzas();
     }
 
     get_pizzas() {
+
         fetch(url_get_pizzas)                   
             .then(res => res.json())
             .catch(error => {
@@ -50,6 +50,7 @@ export default class Home extends Component {
     }
 
     get_sizes() {
+        
         fetch(url_get_sizes)                   
             .then(res => res.json())
             .catch(error => {

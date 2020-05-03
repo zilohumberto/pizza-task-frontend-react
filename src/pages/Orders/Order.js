@@ -53,14 +53,21 @@ export default class Judge extends Component {
         return ""
     }
     check_next_status=(item)=>{
-        const {status} = item
-        if (status.name == 'to_delivery'){
-            return <Button variant="info" onClick={() => this.patchOrder(item, {"status": 4})}> Delivered</Button>
+        const { status } = item
+        const { user } = this.state
+        if (user.is_superuser){
+            if (status.name === 'preparing_order'){
+                return <Button variant="info" onClick={() => this.patchOrder(item, {"status": 3})}> To delivery</Button>
+            }
+            if (status.name === 'to_delivery'){
+                return <Button variant="info" onClick={() => this.patchOrder(item, {"status": 4})}> Delivered</Button>
+            }
         }
         return ""
     }
     patchOrder=(item, data)=>{
         this.setState({step:0})
+        data['id'] = item.id
         fetch(url_orders_order+item.id+"/", 
             {
                 method: 'PATCH',
@@ -70,7 +77,7 @@ export default class Judge extends Component {
                 }
             }
         ).then(res => res.json()).then(data => {
-            this.get_orders()
+            this.get_user_from_cookies()
         },
         (error) => {
             this.setState({error})

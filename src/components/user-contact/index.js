@@ -24,6 +24,7 @@ function FormContact(props) {
                 user: props.user.id
             };
 
+            console.log(data);
             const param = {
                     method: 'POST',
                     body: JSON.stringify(data),
@@ -33,14 +34,14 @@ function FormContact(props) {
             }
 
             fetch(url_user_contact, param)
-            .then(res => res.json())
-            .then(result => {
-                    props.next_contact(result);
-                },
-                error => {
-                    console.log(error);
-                }
-            )
+                .then(res => res.json())
+                .then(result => {
+                        props.next_contact(result);
+                    },
+                    error => {
+                        console.log(error);
+                    }
+                )
         }
         setValidated(true);
     };
@@ -95,8 +96,7 @@ function FormContact(props) {
 }
 
 export class UserContact extends Component {
-
-
+    
     render() {
         const { next_contact, user } = this.props;
         return(

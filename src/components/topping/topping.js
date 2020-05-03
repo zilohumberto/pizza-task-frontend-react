@@ -4,6 +4,7 @@ import { url_orders_order, url_post_command } from '../../constants/api_url'
 
 export default class Topping extends Component {
     
+    
     state={
         next_step: this.props.next_step,
         pizza_price: this.props.price,
@@ -11,10 +12,11 @@ export default class Topping extends Component {
         ingredients: this.props.ingredients,
         toppings: {},
         step: 1,
-        user: this.props.user,
+        user: this.props.user
     }
 
     update_total=(e, item)=>{
+
         let extra = 0;
         let toppings = this.state.toppings;
         if (e.target.checked){
@@ -30,48 +32,71 @@ export default class Topping extends Component {
         })
     }
 
-    HandlerCompleteOrder=()=>{
+    saveOrder() {
+        return new Promise((resolve, reject) => {
+            fetch(url_orders_order, 
+                        {
+                            method: 'POST',
+                            body: JSON.stringify({"user": this.state.user.id}),
+                            headers:{
+                                'Content-Type': 'application/json'
+                            }
+                        }
+            ).then(res => res.json())
+            .catch(error => {
+                reject(null);
+            })
+            .then((response) => {
+                resolve(response);
+            });
+        })
+    }
 
-        this.setState({step:2})
+    saveCommand = (order) => {
+
         let list_toppings = []
         for (var key in this.state.toppings) {  
             if (this.state.toppings[key]){
                 list_toppings.push({'ingredient_topping': key})
             }
         }
-        // if has a previus orde no create a new one (TODO save order)
-        fetch(url_orders_order, 
-                            {
-                                method: 'POST',
-                                body: JSON.stringify({"user": this.state.user.id}),
-                                headers:{
-                                    'Content-Type': 'application/json'
-                                }
-                            }
-        ).then(res => res.json())
-         .catch(error => console.error('Error:', error))
-          .then((response) => {
-                let order = response
-                //TODO we need to save response.id
-                let command_body = {
-                                    'pizza_ordered': this.state.pizza_price.id, 
-                                    'order': response.id, 
-                                    'toppings': list_toppings
-                                };
 
-                fetch(url_post_command, {
-                                            method: 'POST',
-                                            body: JSON.stringify(command_body),
-                                            headers:{
-                                                'Content-Type': 'application/json'
-                                            }
-                                        }
-                ).then(res => res.json())
-                 .catch(error => console.error('Error:', error))
-                 .then(response => {
-                    this.state.next_step(order);
-                });
-          });
+        let command_body = 
+                        {
+                            'pizza_ordered': this.state.pizza_price.id, 
+                            'order': order.id, 
+                            'toppings': list_toppings
+                        };
+
+        fetch(url_post_command, {
+                                    method: 'POST',
+                                    body: JSON.stringify(command_body),
+                                    headers:{
+                                        'Content-Type': 'application/json'
+                                    }
+                                }
+        )
+        .then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+            this.state.next_step(order);
+        });
+
+    }
+
+    HandlerCompleteOrder=()=>{
+
+        this.setState({step:2})
+        
+        if(this.props.order == null) {
+            this.saveOrder()
+                .then(order => {
+                this.saveCommand(order);
+                })
+                .catch(err => console.log('There was an error:' + err)) 
+        }else {
+            this.saveCommand(this.props.order);
+        }
     }
 
     render() {

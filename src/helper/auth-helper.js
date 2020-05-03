@@ -14,6 +14,7 @@ export function getToken() {
 
 export function deleteToken() {
     localStorage.removeItem(SECURITY_KEY_TOKEN);
+    window.location.reload(false);
 }
 
 
