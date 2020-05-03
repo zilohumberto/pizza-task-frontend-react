@@ -117,7 +117,10 @@ export default class Home extends Component {
         sizes: [],
         authenticated: false,
         token: null,
-        user: {}
+        user: {
+            "first_name": "Anony", "last_name": "Mous", id: null, 
+            "username": "anonymous", "delivery_address":[], "contact": []
+        }
     }
 
     componentDidMount() {
@@ -161,7 +164,7 @@ export default class Home extends Component {
             })
     }
     after_auth=(token, user)=>{
-        this.setState({step:0, authenticated: true, user, token: token});
+        this.setState({step:0, authenticated: true, user: user, token: token});
         this.setState({step:1})
     }
 

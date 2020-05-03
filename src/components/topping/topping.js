@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, Media, Badge, Card, Breadcrumb, Spinner } from 'react-bootstrap';
-import { url_post_order, url_post_command } from '../../constants/api_url'
-
-const data = { user: 1 }
+import { url_orders_order, url_post_command } from '../../constants/api_url'
 
 export default class Topping extends Component {
     
@@ -13,6 +11,7 @@ export default class Topping extends Component {
         ingredients: this.props.ingredients,
         toppings: {},
         step: 1,
+        user: this.props.user,
     }
 
     update_total=(e, item)=>{
@@ -41,10 +40,10 @@ export default class Topping extends Component {
             }
         }
         // if has a previus orde no create a new one (TODO save order)
-        fetch(url_post_order, 
+        fetch(url_orders_order, 
                             {
                                 method: 'POST',
-                                body: JSON.stringify(data),
+                                body: JSON.stringify({"user": this.state.user.id}),
                                 headers:{
                                     'Content-Type': 'application/json'
                                 }

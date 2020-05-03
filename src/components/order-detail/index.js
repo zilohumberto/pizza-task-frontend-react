@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { url_orders_order, url_orders_bill } from '../../constants/api_url'
-import { Table, Button, Modal, Spinner } from 'react-bootstrap';
+import { Table, Button, Modal, Spinner, Badge } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
 
 
@@ -46,7 +46,8 @@ export class OrderDetail extends Component {
             isLoading: true,
             order: this.props.order,
             showModal: false,
-            bill: {}
+            bill: {},
+            need_confirm: this.props.need_confirm,
         }
     }
 
@@ -75,7 +76,11 @@ export class OrderDetail extends Component {
         this.setState({ isLoading: true });
         fetch(url_orders_order+this.state.order.id+"/", {
             method: 'PATCH',
-            body: JSON.stringify({"status": 2}),
+            body: JSON.stringify({
+                "status": 2,
+                "contact": this.state.order.contact.id,
+                "address": this.state.order.address.id,
+            }),
             headers:{
                 'Content-Type': 'application/json'
             }
@@ -92,8 +97,19 @@ export class OrderDetail extends Component {
         //this.setState({ steps:3 });
     }
 
+    get_pizza_name=(item)=>{
+        if(item.is_pizza===false){
+            return ""
+        }
+        return (this.state.need_confirm) ? item.name : <div>{item.name} {'  '}<Badge variant="secondary">{item.status}</Badge></div>
+    }
+
     render(){
-        const { steps, isLoading } = this.state;
+        const { steps, isLoading, need_confirm } = this.state;
+        let confirm_button
+        if (need_confirm){
+            confirm_button = <Button type="submit" onClick={this.confirm_order}>Confirm order!</Button>
+        } 
         if(isLoading)
             return <Spinner 
                         animation="border"
@@ -116,7 +132,7 @@ export class OrderDetail extends Component {
                             <tbody>
                                 {this.state.bill.items.map(item => {
                                     return <tr key={item.name}>
-                                        <td>{(item.is_pizza) ? item.name : ""}</td>
+                                        <td>{this.get_pizza_name(item)}</td>
                                         <td>{(item.is_pizza) ? "" : item.name}</td>
                                         <td>{(item.is_pizza) ? item.size : ""}</td>
                                         <td>{item.units}</td>
@@ -126,7 +142,7 @@ export class OrderDetail extends Component {
                             </tbody>
                         </Table>
                         <h1>Total: {this.state.bill.total}</h1>
-                        <Button type="submit" onClick={this.confirm_order}>Confirm order!</Button>
+                        {confirm_button}
                     </div>
                 )
             case 2:

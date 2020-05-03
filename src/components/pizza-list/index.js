@@ -59,9 +59,10 @@ export class PizzaList extends Component {
                             next_step={this.next_step} 
                             pizza={this.state.pizza} 
                             price={this.state.price} 
+                            user={this.state.user}
                         />;
             case 3:
-                return <User order={this.state.order} user={this.state.user} />
+                return <User order={this.state.order} user={this.state.user} need_confirm={true} step={1} />
             default:
         }
     };

@@ -1,10 +1,9 @@
 import React, { useState, Component } from 'react';
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import { url_users_delivery } from '../../constants/api_url'
-
 import { DeliveryAddressList } from '../delivery-address/delivery-address-list'
 
-function DeliveryAddressForm(prop) {
+function DeliveryAddressForm(props) {
 
     const [validated, setValidated] = useState(false);
     var departament, zip_code, street, detail
@@ -22,7 +21,7 @@ function DeliveryAddressForm(prop) {
             'detail': detail.value,
             'zip_code': zip_code.value,
             'departament': departament.value,
-            'user': 1
+            'user': props.user_detail.id
       };
       fetch(url_users_delivery,
         {
@@ -36,7 +35,8 @@ function DeliveryAddressForm(prop) {
       .then(res => res.json())
       .then(
         (result) => {
-            prop.next_address();
+            debugger;
+            props.next_address(result);
         },
         (error) => {
           console.log(error);
@@ -108,50 +108,26 @@ function DeliveryAddressForm(prop) {
   }
 
 export class DeliveryAddress extends Component {   
-
-    state = { addresses: [] }
-
-    componentDidMount() {
-        this.get_contacts();
-    }
-
-    get_contacts() {
-        fetch(url_users_delivery)
-            .then(res => res.json())
-            .then(data => {
-                this.setState({ addresses: data });
-            }
-        )
-    }
-
-    handleUpdateList = () => {
-        this.get_contacts();
-    }
-
+    
     render(){
-        
-        const { addresses } = this.state;
-        const { next_address } = this.props;
-
+        const { next_address, user } = this.props;
+        debugger;
         return (
             <React.Fragment>
-
                 <Row>
                     <Col>
-                        <DeliveryAddressForm next_address={next_address} />
+                        <DeliveryAddressForm user_detail={user} next_address={next_address} />
                     </Col>
                 </Row>
-
                 <Row>
                     <Col>
                         <br></br>
                         <DeliveryAddressList 
-                            addresses={addresses}
                             next_address={next_address}
+                            address={user.delivery_address}
                         />
                     </Col>
                 </Row>
-
             </React.Fragment>
         )
     }

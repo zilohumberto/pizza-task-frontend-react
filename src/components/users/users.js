@@ -8,12 +8,14 @@ export default class User extends Component {
 
     state = {
         step: 1,
-        inside_step: 1,
+        inside_step: this.props.step,
         error : null,
         isLoading: false,
-        data_contact: {},
         order: this.props.order,
+        contact: this.props.order.contact,
+        address: this.props.order.delivery_address,
         user: this.props.user,
+        need_confirm: this.props.need_confirm,
     }
 
     updates_inside=()=>{
@@ -22,21 +24,36 @@ export default class User extends Component {
         })
     }
     resume_detail=()=>{
-        return " - " + this.state.user.last_name;
+        if (this.state.user!== null){
+            return " - " + this.state.user.username;
+        }
+        return "- "
     }
-    resume_contact=()=>{
+    resume_contact=()=>{   
+        const { contact } = this.state;
+        if (contact!==null && contact !== undefined){
+            return contact.email + " " + contact.phone_number
+        } 
+        return ""
     }
     resume_address=()=>{
+        const { address } = this.state;
+        if(address !== null && address !== undefined){
+            return address.departament
+        }
+        return ""
     }
-    next_delivery=()=>{
+    next_detail=()=>{
         this.updates_inside();
     }
-    next_address=()=>{
-        this.updates_inside();
+    next_address=(address)=>{
+        this.setState({address})
+        this.updates_inside()
     } 
 
-    next_contact=(data_contact)=>{
-        this.setState({ data_contact, inside_step:this.state.inside_step +1  });
+    next_contact=(contact)=>{
+        this.setState({contact})
+        this.updates_inside()
     }
 
     render() {
@@ -70,7 +87,7 @@ export default class User extends Component {
                             </footer>
                         </blockquote>
                         <br></br>
-                        <Button variant="primary" onClick={this.next_delivery} >Confirm</Button>
+                        <Button variant="primary" onClick={this.next_detail} >Confirm</Button>
                     </Card.Body>
                 </Card>
             );
@@ -78,24 +95,28 @@ export default class User extends Component {
         let address
         if (this.state.inside_step === 2){
             address = (
-                // TODO LIST OF ADDRESS TO HERE
                 <Card>
                     <Card.Header>Insert an address to delivery</Card.Header>
                     <Card.Body>
-                        <DeliveryAddress next_address={this.next_address}/>
+                        <DeliveryAddress 
+                            next_address={this.next_address}
+                            user={this.state.user}
+                        />
                     </Card.Body>
                 </Card>
             )
         }
         
         let contact 
+        
         if (this.state.inside_step === 3){
+            debugger;
             contact = (
                 <Card>
-                    <Card.Header>Select a contact to delivery</Card.Header>
+                    <Card.Header>Select a contact details</Card.Header>
                     <Card.Body>
                         <UserContact 
-                            userId={1}
+                            user={this.state.user}
                             next_contact={this.next_contact}
                         />
                     </Card.Body>
@@ -104,12 +125,28 @@ export default class User extends Component {
         }
         
         let confirm_order
+        let message
+        let breadcrumb
+        if (this.state.need_confirm){
+            message = "Confirm details of your order"
+            breadcrumb = <Breadcrumb>
+                            <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                            <Breadcrumb.Item >Pizza options</Breadcrumb.Item>
+                            <Breadcrumb.Item active>Complete order</Breadcrumb.Item>
+                        </Breadcrumb>
+                
+        }else{
+            message = "Order Details"
+        }
         if (this.state.inside_step === 4){
+            const { order } = this.state
+            order.contact = this.state.contact
+            order.address = this.state.address
             confirm_order = (
                 <Card>
-                    <Card.Header>Confirm details of your order</Card.Header>
+                    <Card.Header>{message}</Card.Header>
                     <Card.Body>
-                        <OrderDetail order={this.state.order}/>
+                        <OrderDetail order={order} need_confirm={this.state.need_confirm}/>
                     </Card.Body>
                 </Card>
             )
@@ -118,16 +155,12 @@ export default class User extends Component {
         switch(this.state.step) {
             case 1: return (
                 <div>
-                    <Breadcrumb>
-                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                        <Breadcrumb.Item >Pizza options</Breadcrumb.Item>
-                        <Breadcrumb.Item active>Complete order</Breadcrumb.Item>
-                    </Breadcrumb>
+                    {breadcrumb}
                     <ListGroup>
                         <ListGroup.Item variant={(this.state.inside_step>1) ? "success" : ""}><h3>1. User Detail {(this.state.inside_step === 1) ? "" : this.resume_detail()}</h3> 
                         </ListGroup.Item>
                         {detail}
-                        <ListGroup.Item variant={(this.state.inside_step>2) ? "success" : ""}><h3>2. Delivery Address {(this.state.inside_step === 2) ? "" : this.resume_contact()}</h3></ListGroup.Item>
+                        <ListGroup.Item variant={(this.state.inside_step>2) ? "success" : ""}><h3>2. Delivery Address {(this.state.inside_step === 2) ? "" : this.resume_address()}</h3></ListGroup.Item>
                         {address}
                         <ListGroup.Item variant={(this.state.inside_step>3) ? "success" : ""}><h3>3. Contact {(this.state.inside_step === 3) ? "" : this.resume_contact()}</h3></ListGroup.Item>
                         {contact}

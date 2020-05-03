@@ -14,7 +14,6 @@ export class ContactList extends Component {
 
         return(
             <React.Fragment>
-
                 <Row>
                     <Col>
                         <h1>

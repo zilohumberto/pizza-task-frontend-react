@@ -4,26 +4,24 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 
 export class DeliveryAddressList extends Component {
 
-    handlerSelectAddress(contact) {
-        this.props.next_address(contact);
+    handlerSelectAddress(address) {
+        debugger;
+        this.props.next_address(address);
     }
 
     render(){
-
-        const { addresses } = this.props;
-
+        const { address } = this.props;
         return(
             <React.Fragment>
-
                 <Row>
                     <Col>
                         <h1>
-                            List constacts
+                            List Adrress
                         </h1>
                     </Col>
                 </Row>
                 <ListGroup>
-                    {addresses.map(item =>{
+                    {address.map(item =>{
                         return(
                             <ListGroup.Item 
                                 action 
@@ -34,12 +32,11 @@ export class DeliveryAddressList extends Component {
                         )
                     })}
                 </ListGroup>
-
             </React.Fragment>
         )
     };
 }
 
 DeliveryAddressList.proptype = {
-    addresses: PropTypes.object.isRequired,
+    address: PropTypes.object.isRequired,
 }
