@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { PizzaItem } from '../pizza-item';
 import Topping from '../topping/topping';
+import User  from '../users/users';
 import { Row, Col, Badge } from 'react-bootstrap'
-
 
 
 export class PizzaList extends Component {
@@ -15,7 +15,8 @@ export class PizzaList extends Component {
             step: 1,
             pizza:{},
             price:{}, 
-            ingredients: props.ingredients 
+            ingredients: props.ingredients,
+            user: props.user,
         };
     }
 
@@ -23,7 +24,9 @@ export class PizzaList extends Component {
     {
         this.setState({ step:2, pizza, price });
     }
-
+    next_step = (order) =>{
+        this.setState({order, step: 3})
+    }
     render(){
 
         const { pizzas, sizes } = this.props;
@@ -51,7 +54,14 @@ export class PizzaList extends Component {
             case 2:
                 // after select a pizza... now you can select your ingredients!
                 // TODO remove a ingredient for default in a pizza
-                return <Topping pizza={this.state.pizza} price={this.state.price} ingredients={this.state.ingredients} />;
+                return <Topping 
+                            ingredients={this.state.ingredients}
+                            next_step={this.next_step} 
+                            pizza={this.state.pizza} 
+                            price={this.state.price} 
+                        />;
+            case 3:
+                return <User order={this.state.order} user={this.state.user} />
             default:
         }
     };

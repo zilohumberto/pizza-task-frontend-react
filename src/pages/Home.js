@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { PizzaList } from '../components/pizza-list'
-//import { DeliveryAddress } from '../components/delivery-address'
-import { url_get_pizzas, url_get_sizes } from '../constants/api_url'
-import { UserContact } from '../components/user-contact';
-
+import { url_get_pizzas, url_get_sizes, url_ingredients } from '../constants/api_url'
+import { SignInSignUp } from '../components/signin-signup'
 import { Spinner  } from 'react-bootstrap';
+
 
 export default class Home extends Component {
     state = {
-        step: 2,
+        step: 0,
         pizzas: [
             {
                 "id": 1,
@@ -114,13 +113,15 @@ export default class Home extends Component {
             }
         ],
         error : null,
-        isLoading: false,
         pizza_to_order: {},
         sizes: [],
+        authenticated: false,
+        token: null,
+        user: {}
     }
 
     componentDidMount() {
-        if(this.state.step === 1)
+        if(this.state.step === 0)
             this.get_pizzas();
     }
 
@@ -149,44 +150,48 @@ export default class Home extends Component {
     }
 
     get_toppings(){
-        fetch(url_get_sizes)                   
+        fetch(url_ingredients)                   
             .then(res => res.json())
             .catch(error => {
                 this.setState({ error });
             })
             .then(data => {
-
-                let { ingredients } = this.state;
-                ingredients = ingredients.filter(ingredient => ingredient.is_topping === true);
-
-                this.setState({ ingredients, isLoading: false });
+                let ingredients = data.filter(ingredient => ingredient.is_topping === true);
+                this.setState({ ingredients, step: 1 });
             })
+    }
+    after_auth=(token, user)=>{
+        this.setState({step:0, authenticated: true, user, token: token});
+        this.setState({step:1})
     }
 
     render() {
 
-        const { isLoading, error } = this.state;
+        const { error } = this.state;
 
         if (error) {
             return <p>{error.message}</p>;
         }
-
-        if (isLoading) {
-            return <Spinner animation="border" />;
-        }
         
         switch(this.state.step) {
+            case 0: return <Spinner 
+                                animation="border"
+                                className="spinner-border"
+                            />
             case 1:
                 // list of pizzas to choose
-                return <PizzaList 
+                return <React.Fragment>
+                        <br></br>
+                        {(this.state.authenticated) ? <h3>Welcome {this.state.user.last_name}.</h3> : 
+                            <SignInSignUp next_step={this.after_auth}/>}
+                        <PizzaList 
                             pizzas={this.state.pizzas}
                             sizes={this.state.sizes}
-                            ingredients={this.state.ingredients} />
-
-            case 2:
-                return <UserContact userId={1} />
-
-            default:
+                            ingredients={this.state.ingredients}
+                            user={this.state.user}
+                        />
+                    </React.Fragment>
+            default: return <h1>Not found</h1>
         }
     }
 }

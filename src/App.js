@@ -5,11 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { NotFound } from './pages/NotFound';
 import Home from './pages/Home';
 import Orders from './pages/Orders/Order';
-import User  from './pages/Users/user';
 import { Header } from './components/header/header';
 import { Layout } from './components/layout/layout';
-import User from './pages/Users/user'
-
 
 class App extends Component {
 
@@ -21,7 +18,6 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={ Home } />
               <Route exact path="/orders" component={ Orders } />
-              <Route exact path="/user" component={ User } />
               <Route component={ NotFound } />
             </Switch>
           </Layout>

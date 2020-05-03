@@ -1,13 +1,15 @@
-const api_url = 'http://52.24.41.248:443/';
+const api_url = 'http://127.0.0.1:8000/';
 
 
 export const url_get_pizzas = `${api_url}pizzas/pizza/`
 export const url_get_sizes = `${api_url}sizes/`
 export const url_post_order = `${api_url}orders/order/`
 export const url_post_command = `${api_url}commands/command/`
-export const url_users_detail = `${api_url}users/detail/`
 export const url_users_delivery = `${api_url}users/delivery_address/`
 export const url_users_contact = `${api_url}users/contact/`
 export const url_orders_order = `${api_url}orders/order/`
 export const url_user_contact = `${api_url}users/contact/`
 export const url_orders_bill = `${api_url}orders/bill/`
+export const url_ingredients = `${api_url}ingredients/`
+export const url_login = `${api_url}login/`
+export const url_users_user = `${api_url}users/user/`

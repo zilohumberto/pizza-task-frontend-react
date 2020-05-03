@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Container, Row, Col, Media, Badge, Card, Breadcrumb } from 'react-bootstrap';
+import { Button, Form, Media, Badge, Card, Breadcrumb, Spinner } from 'react-bootstrap';
 import { url_post_order, url_post_command } from '../../constants/api_url'
 
 const data = { user: 1 }
@@ -7,6 +7,7 @@ const data = { user: 1 }
 export default class Topping extends Component {
     
     state={
+        next_step: this.props.next_step,
         pizza_price: this.props.price,
         total: this.props.price.price,
         ingredients: this.props.ingredients,
@@ -51,7 +52,7 @@ export default class Topping extends Component {
         ).then(res => res.json())
          .catch(error => console.error('Error:', error))
           .then((response) => {
-
+                let order = response
                 //TODO we need to save response.id
                 let command_body = {
                                     'pizza_ordered': this.state.pizza_price.id, 
@@ -69,14 +70,14 @@ export default class Topping extends Component {
                 ).then(res => res.json())
                  .catch(error => console.error('Error:', error))
                  .then(response => {
-                    // TODO redirect to completed the order! delivery_address and  contact
+                    this.state.next_step(order);
                 });
           });
     }
 
     render() {
         const { pizza, price, ingredients } = this.props;
-        switch (this.state.step) {
+            switch (this.state.step) {
                 case 1: return <React.Fragment>
                                     <div>
                                         <Breadcrumb>
@@ -121,7 +122,10 @@ export default class Topping extends Component {
                                     </div>
                                 </React.Fragment>
                                 
-                case 2: return <p>Loading ...</p>
+                case 2: return <Spinner 
+                                    animation="border"
+                                    className="spinner-border"
+                                />;
 
                 default:
         }

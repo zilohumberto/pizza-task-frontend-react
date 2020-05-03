@@ -11,3 +11,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.spinner-border {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+}

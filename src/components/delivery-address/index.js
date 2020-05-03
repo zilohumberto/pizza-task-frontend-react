@@ -14,7 +14,7 @@ function DeliveryAddressForm(prop) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-      if (form.checkValidity()==false){
+      if (form.checkValidity() === false){
         return ;
       }
       let data = {

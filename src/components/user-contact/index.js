@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { ContactList } from '../contact-list'
-import { url_user_contact, url_user_contact } from '../../constants/api_url'
+import { url_user_contact } from '../../constants/api_url'
 
 function FormContact(props) {
 
@@ -57,7 +57,7 @@ function FormContact(props) {
                         required
                         type="text"
                         placeholder="Email"
-                        ref={imput => Email = imput}
+                        ref={input => Email = input}
                         />
                         <Form.Control.Feedback type="invalid">
                             Please email.
@@ -70,7 +70,7 @@ function FormContact(props) {
                         required
                         type="text"
                         placeholder="Phone Number"
-                        ref={imput => PhoneNumer = imput}
+                        ref={input => PhoneNumer = input}
                     />
                     <Form.Control.Feedback type="invalid">
                         Please phone number
@@ -83,7 +83,7 @@ function FormContact(props) {
                         <Form.Control
                             type="text"
                             placeholder="Phone Number Additional"
-                            ref={imput => PhoneNumerAddicional = imput}
+                            ref={input => PhoneNumerAddicional = input}
                         />
                     </InputGroup>
                 </Form.Group>
