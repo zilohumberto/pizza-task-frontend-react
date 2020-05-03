@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navbar, Nav, Form, Badge } from 'react-bootstrap';
-import { FaShoppingCart } from "react-icons/fa";
+import { Navbar, Nav, Form } from 'react-bootstrap';
 import { SignInSignUp } from '../signin-signup';
+import { ShoppingCar } from '../shopping-car'
 
 export default function Header(props) {
 
@@ -12,16 +12,14 @@ export default function Header(props) {
             <Navbar.Brand href="/"></Navbar.Brand>
             <Nav className="mr-auto">
                 <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/">Features</Nav.Link>
+                <Nav.Link href="/orders">Orders</Nav.Link>
             </Nav>
             <Form inline>
                 {
                     (user !== null) ? <div className="LogIn"><span>Welcome: {`${user.first_name} ${user.last_name}`}</span> <Nav.Link className="logOut" href="#" onClick={log_out}>Log Out</Nav.Link></div>
                     : <SignInSignUp next_step={log_in}/>
                 }
-                <Nav.Link href="/" style={{ color:'white' }}>
-                    <FaShoppingCart size={24} /> <Badge variant="secondary">(0)</Badge>
-                </Nav.Link>
+                <ShoppingCar />
             </Form>
         </Navbar>
     );

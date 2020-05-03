@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { url_orders_order, url_orders_bill } from '../../constants/api_url'
 import { Table, Button, Modal, Spinner, Badge } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
-
+import { getToken } from '../../helper/auth-helper'
 
 function ModelConfirmOrder(props) {
     
@@ -52,27 +52,34 @@ export class OrderDetail extends Component {
     }
 
     componentDidMount() {
-        this.get_bill();
+        const token = getToken();
+        if(token != null)
+        {
+            const token = getToken();
+            this.get_bill(token);    
+        }else{
+            this.get_bill();
+        }
     }
-
-    get_bill=(item)=>{
-
+    get_bill=(token)=>{
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        if (token !== undefined){
+            headers['Authorization'] = `Token ${token.token}`
+        }
         fetch(url_orders_bill, {
             method: 'POST',
-            body: JSON.stringify({"order": this.state.order.id}),
-            headers:{
-                'Content-Type': 'application/json'
-            }
+            body: JSON.stringify({"id": this.state.order.id}),
+            headers: headers
         })                   
             .then(res => res.json())
             .then((data) => {
-                console.log(data);
                 this.setState({ bill: data, isLoading: false });
             })
     }
 
     confirm_order=()=>{
-        
         this.setState({ isLoading: true });
         fetch(url_orders_order+this.state.order.id+"/", {
             method: 'PATCH',
@@ -80,6 +87,7 @@ export class OrderDetail extends Component {
                 "status": 2,
                 "contact": this.state.order.contact.id,
                 "address": this.state.order.address.id,
+                "id": this.state.order.id,
             }),
             headers:{
                 'Content-Type': 'application/json'
@@ -87,7 +95,6 @@ export class OrderDetail extends Component {
         })                   
             .then(res => res.json())
             .then((data) => {
-                console.log("dddd", data);
                 this.setState({ isLoading: false, steps: 2 });
             })
     }

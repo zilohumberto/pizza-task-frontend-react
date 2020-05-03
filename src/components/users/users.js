@@ -25,21 +25,21 @@ export default class User extends Component {
     }
     resume_detail=()=>{
         if (this.state.user!== null){
-            return " - " + this.state.user.username;
+            return ": " + this.state.user.username;
         }
         return "- "
     }
     resume_contact=()=>{   
         const { contact } = this.state;
         if (contact!==null && contact !== undefined){
-            return " - " + contact.email + " " + contact.phone_number
+            return ": " + contact.email + " " + contact.phone_number
         } 
         return ""
     }
     resume_address=()=>{
         const { address } = this.state;
         if(address !== null && address !== undefined){
-            return address.street + " - " + address.departament
+            return ": " + address.street + " - " + address.departament
         }
         return ""
     }

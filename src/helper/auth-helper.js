@@ -1,13 +1,45 @@
-const SECURITY_KEY = "PIZZA";
+import { url_users_user } from '../constants/api_url'
 
-export function setToken(token) {
-    localStorage.setItem(SECURITY_KEY, token);
+const SECURITY_KEY_TOKEN = "TOKEN_PIZZA";
+
+export function setToken(token, User) {
+    const data = {token, User}
+    localStorage.setItem(SECURITY_KEY_TOKEN, JSON.stringify(data));
 }
 
 export function getToken() {
-    return localStorage.getItem(SECURITY_KEY);
+    const data = localStorage.getItem(SECURITY_KEY_TOKEN);
+    return data !== null ? JSON.parse(data): null;
 }
 
 export function deleteToken() {
-    localStorage.removeItem(SECURITY_KEY);
+    localStorage.removeItem(SECURITY_KEY_TOKEN);
 }
+
+
+export function validateToke(token) {
+
+    return new Promise((resolve, reject) => {
+        fetch(url_users_user,
+        {
+            method: 'get', 
+            headers: new Headers({
+                'Authorization': `Token  ${token}`,
+                'Content-Type': 'application/json'
+            }), 
+        })                   
+        .then(res => res.json())
+        .catch(error => {
+            reject(null);
+        })
+        .then(data => {
+            if(data[0] !== null) {
+                resolve(data[0]);
+            } else {
+                reject(null);
+            }
+            
+        })
+    })
+}
+

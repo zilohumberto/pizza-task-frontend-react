@@ -34,22 +34,8 @@ function SignInForm(props) {
         .then(res => res.json())
         .then(
             (result) => {
-                fetch(url_users_user,
-                {
-                    method: 'get', 
-                    headers: new Headers({
-                        'Authorization': `Token  ${result['token']}`, 
-                        'Content-Type': 'application/json'
-                    }), 
-                })                   
-                .then(res => res.json())
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(data => {
-                    props.handleClose();
-                    props.next_step(result['token'], data[0]);
-                })
+                props.handleClose();
+                props.next_step(result['token']);
         },
         (error) => {
           console.log(error);
@@ -97,52 +83,50 @@ function SignUpForm(props) {
     var username, password, first_name, last_name
     
     const handleSubmit = (event) => {
-      const form = event.currentTarget;
-      event.preventDefault();
-      event.stopPropagation();
-      setValidated(true);
-      if (form.checkValidity()===false){
-        return ;
-      }
-      let data = {
+
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        setValidated(true);
+        if (form.checkValidity()===false){
+            return ;
+        }
+
+        let data = {
             'username': username.value,
             'password': password.value,
             'first_name': first_name.value,
             'last_name': last_name.value
-      };
-      fetch(url_users_user,
-        {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers:{
-                'Content-Type': 'application/json'
-            }
-        }
-        )
-      .then(res => res.json())
-      .then(
-        (result) => {
-            fetch(url_login,
-                {
-                    method: 'POST', 
-                    body: JSON.stringify(data),
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    }), 
-                })                   
-                .then(res => res.json())
-                .catch(error => {
-                    console.log(error);
-                })
-                .then(data => {
-                    props.handleClose();
-                    props.next_step(data['token'], result);
-                })
+        };
+
+        fetch(url_users_user, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+        })
+        .then(res => res.json())
+        .then((result) => {
+            fetch(url_login, {
+                method: 'POST', 
+                body: JSON.stringify(data),
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }), 
+            })                   
+            .then(res => res.json())
+            .catch(error => {
+                console.log(error);
+            })
+            .then(data => {
+                props.handleClose();
+                props.next_step(data['token']);
+            })
         },
         (error) => {
-          console.log(error);
-        }
-      )
+            console.log(error);
+        })
     };
   
     return (

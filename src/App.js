@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Orders from './pages/Orders/Order';
 import Header from './components/header/header';
 import { Layout } from './components/layout/layout';
-import { setToken, deleteToken, } from './helper/auth-helper'
+import { setToken, deleteToken, validateToke, getToken } from './helper/auth-helper'
 
 class App extends Component {
 
@@ -17,13 +17,20 @@ class App extends Component {
     this.state = { user: null }
   }
 
-  login = (token, user) => {
-  
-    console.log(token)
-    console.log(user)
+  componentDidMount() {
+    const cookies = getToken();
+    if(cookies != null) {
+      this.CheckLogin(cookies.token);
+    }
+  }  
 
-    this.setState({ user });
-    setToken(token);
+  CheckLogin = (token) => {
+    validateToke(token)
+        .then(user => {
+          this.setState({ user });
+          setToken(token, user);
+        })
+        .catch(err => console.log('There was an error:' + err))    
   }
 
   logout = () => {
@@ -36,7 +43,7 @@ class App extends Component {
 
     return (
       <React.Fragment>
-        <Header user={user} log_in={this.login} log_out={this.logout} />
+        <Header user={user} log_in={this.CheckLogin} log_out={this.logout} />
         <Layout>
           <Switch>
             <Route exact path="/" component={ Home } />
