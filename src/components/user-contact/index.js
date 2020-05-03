@@ -99,7 +99,6 @@ export class UserContact extends Component {
 
     render() {
         const { next_contact, user } = this.props;
-        debugger;
         return(
             <React.Fragment>
 

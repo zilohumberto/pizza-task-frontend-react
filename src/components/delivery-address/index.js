@@ -35,7 +35,6 @@ function DeliveryAddressForm(props) {
       .then(res => res.json())
       .then(
         (result) => {
-            debugger;
             props.next_address(result);
         },
         (error) => {
@@ -111,7 +110,6 @@ export class DeliveryAddress extends Component {
     
     render(){
         const { next_address, user } = this.props;
-        debugger;
         return (
             <React.Fragment>
                 <Row>

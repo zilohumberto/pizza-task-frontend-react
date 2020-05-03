@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+.LogIn {
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  display: inline;
+}
+
+.LogIn > .logOut {
+  color: white;
+  display: inline;
+}
+
+.login-information {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -9,30 +9,32 @@ function SignInForm(props) {
     var username, password
     
     const handleSubmit = (event) => {
-      const form = event.currentTarget;
-      event.preventDefault();
-      event.stopPropagation();
-      setValidated(true);
-      if (form.checkValidity()===false){
-        return ;
-      }
-      let data = {
+
+        const form = event.currentTarget;
+        event.preventDefault();
+        event.stopPropagation();
+        setValidated(true);
+        
+        if (form.checkValidity()===false){
+            return ;
+        }
+
+        let data = {
             'username': username.value,
             'password': password.value
-      };
-      fetch(url_login,
-        {
+        };
+
+        fetch(url_login, {
             method: 'POST',
             body: JSON.stringify(data),
             headers:{
                 'Content-Type': 'application/json'
             }
-        }
-        )
-      .then(res => res.json())
-      .then(
-        (result) => {
-            fetch(url_users_user,
+        })
+        .then(res => res.json())
+        .then(
+            (result) => {
+                fetch(url_users_user,
                 {
                     method: 'get', 
                     headers: new Headers({
@@ -90,6 +92,7 @@ function SignInForm(props) {
   }
 
 function SignUpForm(props) {
+
     const [validated, setValidated] = useState(false);
     var username, password, first_name, last_name
     
@@ -201,6 +204,7 @@ function SignUpForm(props) {
   }
 
 function ModalLog(props) {
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -208,10 +212,11 @@ function ModalLog(props) {
 
     return (
         <>
-        <h5> 
+        <span className="login-information"> 
             You can order without login. If you want <Badge variant="secondary">Track Your Order</Badge> 
-            {' '}<Button variant="primary" onClick={handleShow}>SignIn or SignUp</Button>
-        </h5>
+            {' '}
+            <Button variant="primary" size="sm" onClick={handleShow}>SignIn or SignUp</Button>
+        </span>
         <Modal show={show} onHide={handleClose} size="lg">
             <Modal.Header closeButton>
             <Modal.Title>Sign In or Sign Up</Modal.Title>
@@ -230,6 +235,7 @@ function ModalLog(props) {
         </>
     );
 }
+
 export class SignInSignUp extends Component {   
     render(){
         const { next_step } = this.props;

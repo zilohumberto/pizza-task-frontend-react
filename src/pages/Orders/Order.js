@@ -48,7 +48,7 @@ export default class Judge extends Component {
                                 </Card.Header>
                                 <Accordion.Collapse eventKey="1">
                                 <Card.Body>
-                                        <User order={item} user={item.user} need_confirm={false} step={4} />
+                                        <User order={item} contact={item.contact} address={item.address} user={item.user} need_confirm={false} step={4} />
                                 </Card.Body>
                                 </Accordion.Collapse>
                             </Card>

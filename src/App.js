@@ -5,23 +5,46 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { NotFound } from './pages/NotFound';
 import Home from './pages/Home';
 import Orders from './pages/Orders/Order';
-import { Header } from './components/header/header';
+import Header from './components/header/header';
 import { Layout } from './components/layout/layout';
+import { setToken, deleteToken, } from './helper/auth-helper'
 
 class App extends Component {
 
+  constructor() {
+    super();
+
+    this.state = { user: null }
+  }
+
+  login = (token, user) => {
+  
+    console.log(token)
+    console.log(user)
+
+    this.setState({ user });
+    setToken(token);
+  }
+
+  logout = () => {
+    this.setState({ user:null });
+    deleteToken();
+  }
+
   render(){
+    const { user } = this.state ;
+
     return (
       <React.Fragment>
-          <Header />
-          <Layout>
-            <Switch>
-              <Route exact path="/" component={ Home } />
-              <Route exact path="/orders" component={ Orders } />
-              <Route component={ NotFound } />
-            </Switch>
-          </Layout>
-        </React.Fragment>
+        <Header user={user} log_in={this.login} log_out={this.logout} />
+        <Layout>
+          <Switch>
+            <Route exact path="/" component={ Home } />
+            <Route exact path="/orders" component={ Orders } />
+            <Route component={ NotFound } />
+          </Switch>
+        </Layout>
+      </React.Fragment>
     );
   }
 }

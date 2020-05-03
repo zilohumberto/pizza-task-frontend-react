@@ -5,7 +5,6 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 export class DeliveryAddressList extends Component {
 
     handlerSelectAddress(address) {
-        debugger;
         this.props.next_address(address);
     }
 

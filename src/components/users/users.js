@@ -12,8 +12,8 @@ export default class User extends Component {
         error : null,
         isLoading: false,
         order: this.props.order,
-        contact: this.props.order.contact,
-        address: this.props.order.delivery_address,
+        contact: this.props.contact,
+        address: this.props.address,
         user: this.props.user,
         need_confirm: this.props.need_confirm,
     }
@@ -32,14 +32,14 @@ export default class User extends Component {
     resume_contact=()=>{   
         const { contact } = this.state;
         if (contact!==null && contact !== undefined){
-            return contact.email + " " + contact.phone_number
+            return " - " + contact.email + " " + contact.phone_number
         } 
         return ""
     }
     resume_address=()=>{
         const { address } = this.state;
         if(address !== null && address !== undefined){
-            return address.departament
+            return address.street + " - " + address.departament
         }
         return ""
     }
@@ -110,7 +110,6 @@ export default class User extends Component {
         let contact 
         
         if (this.state.inside_step === 3){
-            debugger;
             contact = (
                 <Card>
                     <Card.Header>Select a contact details</Card.Header>

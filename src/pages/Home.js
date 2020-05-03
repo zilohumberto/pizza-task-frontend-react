@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { PizzaList } from '../components/pizza-list'
 import { url_get_pizzas, url_get_sizes, url_ingredients } from '../constants/api_url'
-import { SignInSignUp } from '../components/signin-signup'
 import { Spinner  } from 'react-bootstrap';
 
 
 export default class Home extends Component {
+
     state = {
         step: 0,
         pizzas: [
@@ -163,13 +163,9 @@ export default class Home extends Component {
                 this.setState({ ingredients, step: 1 });
             })
     }
-    after_auth=(token, user)=>{
-        this.setState({step:0, authenticated: true, user: user, token: token});
-        this.setState({step:1})
-    }
 
-    render() {
-
+    render() {       
+        
         const { error } = this.state;
 
         if (error) {
@@ -184,9 +180,6 @@ export default class Home extends Component {
             case 1:
                 // list of pizzas to choose
                 return <React.Fragment>
-                        <br></br>
-                        {(this.state.authenticated) ? <h3>Welcome {this.state.user.last_name}.</h3> : 
-                            <SignInSignUp next_step={this.after_auth}/>}
                         <PizzaList 
                             pizzas={this.state.pizzas}
                             sizes={this.state.sizes}
