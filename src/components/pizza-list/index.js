@@ -23,9 +23,12 @@ export class PizzaList extends Component {
     }
 
     componentDidMount() {
+        if(this.props.user.id === null){
+            deleteOrder();
+            return ;
+        }
         const cookieOrder = getOrder();
         if(cookieOrder !== null && cookieOrder !== undefined) {
-            
             fetch(`${url_orders_order}?id=${cookieOrder.orderId}`)
                 .then(res => res.json())
                 .catch(error => {
@@ -45,12 +48,12 @@ export class PizzaList extends Component {
         this.setState({ step:2, pizza, price, });
     }
 
-    next_step = (order) =>{
+    continue_order = (order) =>{
         this.setState({ order, step: 1 })
     }
 
-    handleFinalizePurchase = () =>{
-        this.setState({ step: 3 })
+    complete_order = (order) => {
+        this.setState({order, step: 3})
     }
     
     render(){
@@ -88,7 +91,8 @@ export class PizzaList extends Component {
                 // TODO remove a ingredient for default in a pizza
                 return <Topping 
                             ingredients={this.state.ingredients}
-                            next_step={this.next_step} 
+                            continue_order={this.continue_order} 
+                            complete_order={this.complete_order}
                             pizza={this.state.pizza} 
                             price={this.state.price} 
                             user={this.state.user}

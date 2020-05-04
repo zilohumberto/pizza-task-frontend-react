@@ -5,6 +5,29 @@ import { Redirect } from 'react-router-dom'
 import { getToken } from '../../helper/auth-helper'
 import { deleteOrder } from '../../helper/order_cookie_helper'
 
+
+function get_order_by_id(orderId){
+    return new Promise((resolve, reject) => {   
+        let header = {
+            'Content-Type': 'application/json'
+        }
+        fetch(url_orders_order + "?id="+orderId, 
+                    {
+                        method: 'GET',
+                        headers:header
+                    }
+        )
+        .then(function(response) {
+            if (!response.ok) {
+                let message = 'unhandle error';
+                reject(message)
+            }else{
+                resolve(response.json())
+            }
+        })
+    })
+}
+
 function ModelConfirmOrder(props) {
     
     return (
@@ -48,11 +71,14 @@ export class OrderDetail extends Component {
             steps: 0,
             isLoading: false,
             order: this.props.order,
+            contact: this.props.order.contact,
+            address: this.props.order.address,
             showModal: false,
             bill: {},
             need_confirm: this.props.need_confirm,
             no_pizza: false,
-            cookie_token: null
+            cookie_token: null,
+            error: null,
         }
     }
 
@@ -62,15 +88,29 @@ export class OrderDetail extends Component {
         {
             this.setState({cookie_token:token})
         }
-        if (this.state.order.command_set !== null && this.state.order.command_set.length > 0 ){
+        if(this.state.order.command_set !==undefined ){
             if(this.state.need_confirm === true){
                 this.get_bill()
             }else{
                 this.setState({ steps: 1 });
             }
+            return 
         }
+        get_order_by_id(this.state.order.id)
+        .then((data)=>{
+            let order = data[0]
+            this.setState({order})
+            if(this.state.need_confirm === true){
+                this.get_bill()
+            }else{
+                this.setState({ steps: 1 });
+            }
+            debugger;
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
     }
-
     get_bill=()=>{
         const {cookie_token} = this.state;
         this.setState({ isLoading: true });
@@ -99,8 +139,8 @@ export class OrderDetail extends Component {
             method: 'PATCH',
             body: JSON.stringify({
                 "status": 2,
-                "contact": this.state.order.contact.id,
-                "address": this.state.order.address.id,
+                "contact": this.state.contact.id,
+                "address": this.state.address.id,
                 "id": this.state.order.id,
             }),
             headers:{
@@ -125,7 +165,7 @@ export class OrderDetail extends Component {
     }
 
     render(){
-        const { steps, isLoading, need_confirm } = this.state;
+        const { steps, isLoading, need_confirm, error } = this.state;
         let confirm_button
         if (need_confirm){
             confirm_button = <Button type="submit" onClick={this.confirm_order}>Confirm order!</Button>
@@ -135,6 +175,9 @@ export class OrderDetail extends Component {
                         animation="border"
                         className="spinner-border"
                     />;
+        if (error){
+            return {error}
+        }
         switch(steps) {
             default:
                 return <><h1>No pizza </h1></>

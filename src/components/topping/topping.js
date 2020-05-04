@@ -7,7 +7,9 @@ export default class Topping extends Component {
     
     
     state={
-        next_step: this.props.next_step,
+        continue_order: this.props.continue_order,
+        complete_order: this.props.complete_order,
+        next_step: null,
         pizza_price: this.props.price,
         total: this.props.price.price,
         ingredients: this.props.ingredients,
@@ -83,15 +85,12 @@ export default class Topping extends Component {
             let dataCookie = getOrder();
             dataCookie.amount++;
             setOrder(dataCookie);
-
             this.state.next_step(order);
         });
     }
 
     HandlerCompleteOrder=()=>{
-
         this.setState({step:2})
-        
         if(this.props.order == null) {
             this.saveOrder()
                 .then(order => {
@@ -109,60 +108,73 @@ export default class Topping extends Component {
             this.saveCommand(this.props.order);
         }
     }
-
+    CompleteOrder=()=>{
+        this.setState({next_step: this.state.complete_order})
+        this.HandlerCompleteOrder()
+    }
+    ContinueOrder=()=>{
+        this.setState({next_step: this.state.continue_order})
+        this.HandlerCompleteOrder()
+    }
     render() {
-        const { pizza, price, ingredients } = this.props;
-            switch (this.state.step) {
-                case 1: return <React.Fragment>
-                                    <div>
-                                        <Breadcrumb>
-                                            <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-                                            <Breadcrumb.Item active>Pizza options</Breadcrumb.Item>
-                                        </Breadcrumb>
-                                        <Media>
-                                            <img
-                                                width={400}
-                                                height={400}
-                                                className="mr-4"
-                                                src={pizza.photo}
-                                                alt={pizza.name}
-                                            />
-                                            <Media.Body>
-                                                <h2>{pizza.name}</h2> <h5>{price.size.name}</h5>
-                                                <p>
-                                                {pizza.description}
-                                                </p>
-                                            </Media.Body>
-                                        </Media>
-                                        <Form>
-                                            <Form.Label>Do you want add any extra ingredient?</Form.Label>
-                                            {ingredients.map(item => {
-                                                // TODO field to add amount and description after add a ingredient!
-                                                return  <Form.Check type="checkbox" controlId="inputTopping" key={item.id}>
-                                                            <Form.Check.Input type="checkbox" placeholder="units" onChange={(e) => this.update_total(e, item)} isValid />
-                                                            <Form.Check.Label>{item.name} x <Badge variant="secondary">{item.cost} EUR</Badge></Form.Check.Label>
-                                                        </Form.Check>
-                                            })}
-                                        </Form>
-                                        <Card style={{ width: '48rem' }}>
-                                            <Card.Body>
-                                                <Card.Title>Total</Card.Title>
-                                                <Card.Subtitle className="mb-2 text-muted">{this.state.total}</Card.Subtitle>
-                                                <Card.Text>
-                                                    Delivery cost will be added (max 10 USD / 12 EUR )
-                                                </Card.Text>
-                                                <Button variant="primary" onClick={this.HandlerCompleteOrder}>Complete Order</Button>
-                                            </Card.Body>
-                                        </Card>
-                                    </div>
-                                </React.Fragment>
-                                
-                case 2: return <Spinner 
-                                    animation="border"
-                                    className="spinner-border"
-                                />;
+        const { pizza, price, ingredients, user } = this.props;
+        let complete_order = <Button variant="primary" onClick={this.CompleteOrder}>Complete Order</Button>
+        let continue_order = null
+        if (user.id!==null){
+            continue_order = <Button variant="primary" onClick={this.ContinueOrder}>Continue with Order</Button>
+        }
+        switch (this.state.step) {
+            case 1: return <React.Fragment>
+                                <div>
+                                    <Breadcrumb>
+                                        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+                                        <Breadcrumb.Item active>Pizza options</Breadcrumb.Item>
+                                    </Breadcrumb>
+                                    <Media>
+                                        <img
+                                            width={400}
+                                            height={400}
+                                            className="mr-4"
+                                            src={pizza.photo}
+                                            alt={pizza.name}
+                                        />
+                                        <Media.Body>
+                                            <h2>{pizza.name}</h2> <h5>{price.size.name}</h5>
+                                            <p>
+                                            {pizza.description}
+                                            </p>
+                                        </Media.Body>
+                                    </Media>
+                                    <Form>
+                                        <Form.Label>Do you want add any extra ingredient?</Form.Label>
+                                        {ingredients.map(item => {
+                                            // TODO field to add amount and description after add a ingredient!
+                                            return  <Form.Check type="checkbox" controlId="inputTopping" key={item.id}>
+                                                        <Form.Check.Input type="checkbox" placeholder="units" onChange={(e) => this.update_total(e, item)} isValid />
+                                                        <Form.Check.Label>{item.name} x <Badge variant="secondary">{item.cost} EUR</Badge></Form.Check.Label>
+                                                    </Form.Check>
+                                        })}
+                                    </Form>
+                                    <Card style={{ width: '48rem' }}>
+                                        <Card.Body>
+                                            <Card.Title>Total</Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">{this.state.total}</Card.Subtitle>
+                                            <Card.Text>
+                                                Delivery cost will be added (max 10 USD / 12 EUR )
+                                            </Card.Text>
+                                            {continue_order}
+                                            {complete_order}
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+                            </React.Fragment>
+                            
+            case 2: return <Spinner 
+                                animation="border"
+                                className="spinner-border"
+                            />;
 
-                default:
+            default: return "not found"
         }
     }
 }
