@@ -34,7 +34,7 @@ function change_ingredients_by_client(token, id, data, method='POST'){
             'Content-Type': 'application/json'
         }
         let url = url_ingredients_by_client
-        if(method=='DELETE'){
+        if(method==='DELETE'){
             url += "/" + id + "/"
         }
         fetch(url,
@@ -49,7 +49,7 @@ function change_ingredients_by_client(token, id, data, method='POST'){
                 let message = 'unhandle error';
                 reject(message)
             }else{
-                if(method=='DELETE'){
+                if(method==='DELETE'){
                     resolve()
                 }else{
                     resolve(response.json())
@@ -156,7 +156,7 @@ export class CartPizzaOptions extends Component {
                         </Table>
                         </>
                     })}
-                    <h1>Total: {this.state.total}</h1>
+                    <h1>Delivery: {this.state.bill.delivery} - Total: {this.state.total}</h1>
                     <Button type="submit" onClick={this.confirm_order}>Confirm order!</Button>
                 </>
             case 1:

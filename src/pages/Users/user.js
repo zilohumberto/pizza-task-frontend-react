@@ -14,11 +14,12 @@ export default class User extends Component {
         isLoading: false,
         user: {},
         data_contact: {},
-        orderID: 5
+        orderID: 5,
+        user: this.props.user,
     }
 
     componentDidMount() {
-        this.get_user(1);
+        this.get_user(this.props.user.id);
     }
 
     get_user(user_id){

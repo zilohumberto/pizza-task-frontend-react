@@ -1,4 +1,4 @@
- const api_url = 'http://52.24.41.248:443/';
+ const api_url = '';
 
 
 export const url_get_pizzas = `${api_url}pizzas/pizza/`

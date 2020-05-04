@@ -164,7 +164,7 @@ export class OrderDetail extends Component {
                             })}
                         </tbody>
                     </Table>
-                    <h1>Total: {this.state.bill.total}</h1>
+                    <h1>Delivery: {this.state.bill.delivery} - Total: {this.state.bill.total}</h1>
                     {confirm_button}
                 </>
             case 3:
