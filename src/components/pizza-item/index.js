@@ -10,7 +10,7 @@ export class PizzaItem extends Component {
             <React.Fragment>
                 <Row>
                     <Col xs={3}>
-                        <Card style={{ width: '8rem' }}>
+                        <Card style={{ width: '12rem' }}>
                             <Card.Img variant="top" src={pizza.photo} />
                             <Card.Body>
                                 <Card.Title>{pizza.name}</Card.Title>
