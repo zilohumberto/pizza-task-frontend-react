@@ -95,7 +95,6 @@ export class CartPizzaOptions extends Component {
         total = parseFloat(total)
         let data = {}
         let method = 'POST'
-        debugger;
         if (e.target.checked){
             total += item.ingredient_topping.cost
             data = item
@@ -122,7 +121,7 @@ export class CartPizzaOptions extends Component {
                 </Breadcrumb>
                 {this.state.order.command_set.map(item => {
                         return <>
-                        <Table striped bordered hover key={item.id}>
+                        <Table responsive striped bordered hover key={item.id}>
                             <tbody >
                                 <tr >
                                     <td>{item.pizza_ordered.pizza.name}</td>

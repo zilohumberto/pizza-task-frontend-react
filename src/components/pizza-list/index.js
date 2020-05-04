@@ -58,21 +58,13 @@ export class PizzaList extends Component {
     
     render(){
         const { pizzas, sizes } = this.props;
-        let finalize
         switch (this.state.step) {
             case 1:
                 return <React.Fragment>
-
                             <Row>
-                                <Col style={{ textAlign:"Right" }}>
-                                    <br></br>
-                                    {finalize}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col xs={3}></Col>
+                                <Col xs={12} md={3} ></Col>
                                 {sizes.map(item => {
-                                    return <Col xs={3} key={item.id}>
+                                    return <Col xs={4} md={3} key={item.id}>
                                                 <Badge pill variant="success">{item.name}</Badge>
                                             </Col>
                                 })}

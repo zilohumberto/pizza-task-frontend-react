@@ -9,8 +9,8 @@ export class PizzaItem extends Component {
         return(
             <React.Fragment>
                 <Row>
-                    <Col xs={3}>
-                        <Card style={{ width: '12rem' }}>
+                    <Col xs={12} md={3}>
+                        <Card >
                             <Card.Img variant="top" src={pizza.photo} />
                             <Card.Body>
                                 <Card.Title>{pizza.name}</Card.Title>
@@ -19,9 +19,9 @@ export class PizzaItem extends Component {
                     </Col>
                     
                     {pizza.prices.map(item => {
-                        return  <Col key={item.id} xs={3}>
+                        return  <Col key={item.id} xs={4} md={3}>
                                     <Button variant="primary" size="lg" block onClick={() => handlerDetailPizza(item, pizza)}>
-                                        {item.price} {item.size.name} 
+                                        {item.price} EUR
                                     </Button>
                                 </Col>
                     })}

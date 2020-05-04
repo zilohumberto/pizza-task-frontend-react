@@ -105,7 +105,6 @@ export class OrderDetail extends Component {
             }else{
                 this.setState({ steps: 1 });
             }
-            debugger;
         })
         .catch((error)=>{
             console.log(error);
@@ -185,7 +184,7 @@ export class OrderDetail extends Component {
                 return <><button onClick={this.get_bill}> Show Bill</button></>
             case 2: 
                 return <>
-                    <Table striped bordered hover>
+                    <Table responsive striped bordered hover>
                         <thead>
                             <tr>
                                 <th>Pizza</th>

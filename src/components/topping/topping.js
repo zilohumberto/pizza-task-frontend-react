@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Media, Badge, Card, Breadcrumb, Spinner } from 'react-bootstrap';
+import { Button, Form, Row, Col, Badge, Card, Breadcrumb, Spinner } from 'react-bootstrap';
 import { url_orders_order, url_post_command } from '../../constants/api_url';
 import { setOrder, getOrder } from '../../helper/order_cookie_helper';
 
@@ -121,7 +121,10 @@ export default class Topping extends Component {
         let complete_order = <Button variant="primary" onClick={this.CompleteOrder}>Complete Order</Button>
         let continue_order = null
         if (user.id!==null){
-            continue_order = <Button variant="primary" onClick={this.ContinueOrder}>Continue with Order</Button>
+            continue_order = <>
+                {' or '}
+                <Button variant="primary" onClick={this.ContinueOrder}>Continue with Order</Button>
+            </>
         }
         switch (this.state.step) {
             case 1: return <React.Fragment>
@@ -130,21 +133,19 @@ export default class Topping extends Component {
                                         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
                                         <Breadcrumb.Item active>Pizza options</Breadcrumb.Item>
                                     </Breadcrumb>
-                                    <Media>
-                                        <img
-                                            width={400}
-                                            height={400}
-                                            className="mr-4"
-                                            src={pizza.photo}
-                                            alt={pizza.name}
-                                        />
-                                        <Media.Body>
+                                    <Row>
+                                        <Col xs={12} md={6}>
+                                            <Card >
+                                                <Card.Img variant="top" src={pizza.photo} />
+                                            </Card>
+                                        </Col>
+                                        <Col xs={12} md={6}>
                                             <h2>{pizza.name}</h2> <h5>{price.size.name}</h5>
                                             <p>
                                             {pizza.description}
                                             </p>
-                                        </Media.Body>
-                                    </Media>
+                                        </Col>
+                                    </Row>
                                     <Form>
                                         <Form.Label>Do you want add any extra ingredient?</Form.Label>
                                         {ingredients.map(item => {
@@ -155,15 +156,15 @@ export default class Topping extends Component {
                                                     </Form.Check>
                                         })}
                                     </Form>
-                                    <Card style={{ width: '48rem' }}>
+                                    <Card>
                                         <Card.Body>
                                             <Card.Title>Total</Card.Title>
                                             <Card.Subtitle className="mb-2 text-muted">{this.state.total}</Card.Subtitle>
                                             <Card.Text>
-                                                Delivery cost will be added (max 10 USD / 12 EUR )
+                                                Delivery cost will be added (max 12 EUR / 10 USD )
                                             </Card.Text>
-                                            {continue_order}
                                             {complete_order}
+                                            {continue_order}
                                         </Card.Body>
                                     </Card>
                                 </div>
