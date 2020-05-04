@@ -1,4 +1,5 @@
 import { url_users_user } from '../constants/api_url'
+import {deleteOrder} from './order_cookie_helper'
 
 const SECURITY_KEY_TOKEN = "TOKEN_PIZZA";
 
@@ -14,11 +15,12 @@ export function getToken() {
 
 export function deleteToken() {
     localStorage.removeItem(SECURITY_KEY_TOKEN);
+    deleteOrder()
     window.location.reload(false);
 }
 
 
-export function validateToke(token) {
+export function validateToken(token) {
 
     return new Promise((resolve, reject) => {
         fetch(url_users_user,

@@ -3,15 +3,12 @@ import { DeliveryAddress } from '../delivery-address'
 import { OrderDetail } from '../order-detail'
 import { ListGroup, Breadcrumb, Card, Button, Spinner } from 'react-bootstrap';
 import { UserContact } from '../user-contact'
+import { getToken, validateToken, setToken } from '../../helper/auth-helper'
 
 export default class User extends Component {
 
-    
-
     constructor(props) {
         super(props);
-
-        console.log(this.props.user);
         this.state = {
             step: 1,
             inside_step: this.props.step,
@@ -24,15 +21,33 @@ export default class User extends Component {
             need_confirm: this.props.need_confirm,
         }
     }
-
+    componentDidMount(){
+        const cookies = getToken();
+        if(cookies != null) {
+            this.CheckLogin(cookies.token);
+        }
+    }
+    CheckLogin = (token) => {
+        const { need_confirm } = this.state
+        if (need_confirm===false){
+            return;
+        }
+        validateToken(token)
+            .then(user => {
+              this.setState({ user });
+              setToken(token, user);
+            })
+            .catch(err => console.log('There was an error:' + err))    
+    }
     updates_inside=()=>{
         this.setState({
             inside_step:this.state.inside_step +1 
         })
     }
     resume_detail=()=>{
-        if (this.state.user!== null){
-            return ": " + this.state.user.username;
+        const {user} = this.state
+        if (user!== null){
+            return ": " + user.first_name + " " + user.last_name;
         }
         return "- "
     }
@@ -145,7 +160,6 @@ export default class User extends Component {
             message = "Order Details"
         }
         if (this.state.inside_step === 4){
-
             const { order } = this.state;
             order.contact = this.state.contact
             order.address = this.state.address
@@ -153,7 +167,10 @@ export default class User extends Component {
                 <Card>
                     <Card.Header>{message}</Card.Header>
                     <Card.Body>
-                        <OrderDetail order={order} need_confirm={this.state.need_confirm}/>
+                        <OrderDetail 
+                            order={order}
+                            need_confirm={this.state.need_confirm}
+                        />
                     </Card.Body>
                 </Card>
             )

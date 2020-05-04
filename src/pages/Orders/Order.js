@@ -5,7 +5,7 @@ import User  from '../../components/users/users';
 import { getToken } from '../../helper/auth-helper'
 
 
-export default class Judge extends Component {
+export default class Order extends Component {
     state = {
         step: 0,
         user : {},
@@ -122,7 +122,6 @@ export default class Judge extends Component {
                                 </Card.Header>
                                 <Accordion.Collapse eventKey="1">
                                 <Card.Body>
-                                    <p> after all Pizzas's already in 'cooked' the order change to 'to_delivery'</p>
                                     <User order={item} contact={item.contact} address={item.address} user={item.user} need_confirm={false} step={4} />
                                 </Card.Body>
                                 </Accordion.Collapse>

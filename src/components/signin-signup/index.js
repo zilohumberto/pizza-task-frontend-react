@@ -2,9 +2,31 @@ import React, { useState, Component } from 'react';
 import { Form, Button, Row, Col, Badge, Modal} from 'react-bootstrap';
 import { url_users_user, url_login } from '../../constants/api_url'
 
+function LoginIn(data){
+    return new Promise((resolve, reject) => {
+        fetch(url_login, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                let message = 'unhandle error';
+                if (response.status === 400){
+                    message ='Unable to log in with provided credentials.'
+                }
+                reject(message)
+            }
+            resolve(response.json())
+        })
+    })
+}
 
 function SignInForm(props) {
 
+    const [errorLogin, setErrorLogin] = useState(false);
     const [validated, setValidated] = useState(false);
     var username, password
     
@@ -24,25 +46,14 @@ function SignInForm(props) {
             'password': password.value
         };
 
-        fetch(url_login, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers:{
-                'Content-Type': 'application/json'
-            }
+        LoginIn(data).then(function(result) {
+            props.handleClose();
+            props.next_step(result['token'], true);
         })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                props.handleClose();
-                props.next_step(result['token']);
-        },
-        (error) => {
-          console.log(error);
-        }
-      )
+        .catch(function(error) {
+            setErrorLogin(true);
+        })
     };
-  
     return (
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Row>
@@ -72,13 +83,16 @@ function SignInForm(props) {
                         </Form.Control.Feedback>
                 </Form.Group>
             </Form.Row>
+            {
+                errorLogin ? <Form.Row>Invalid Credentials</Form.Row> : ""
+            }
             <Button type="submit">Sing In</Button>
         </Form>
     );
   }
 
 function SignUpForm(props) {
-
+    const [errorLogin, setErrorLogin] = useState(false);
     const [validated, setValidated] = useState(false);
     var username, password, first_name, last_name
     
@@ -98,7 +112,6 @@ function SignUpForm(props) {
             'first_name': first_name.value,
             'last_name': last_name.value
         };
-
         fetch(url_users_user, {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -106,26 +119,24 @@ function SignUpForm(props) {
                     'Content-Type': 'application/json'
                 }
         })
-        .then(res => res.json())
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(response.statusText)
+            }
+            return response.json()
+        })
         .then((result) => {
-            fetch(url_login, {
-                method: 'POST', 
-                body: JSON.stringify(data),
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }), 
-            })                   
-            .then(res => res.json())
-            .catch(error => {
-                console.log(error);
-            })
-            .then(data => {
+            LoginIn(data).then(function(result) {
                 props.handleClose();
-                props.next_step(data['token']);
+                props.next_step(result['token'], true);
             })
-        },
-        (error) => {
-            console.log(error);
+            .catch(function(error) {
+                // TODO Show error
+                console.error(error);
+            })
+        })
+        .catch((error) => {
+            setErrorLogin(true);
         })
     };
   
@@ -173,7 +184,7 @@ function SignUpForm(props) {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         required
-                        type="text"
+                        type="password"
                         placeholder="password"
                         ref={(input) => password = input}
                         />
@@ -182,6 +193,9 @@ function SignUpForm(props) {
                         </Form.Control.Feedback>
                 </Form.Group>
             </Form.Row>
+            {
+                errorLogin ? <Form.Row>Invalid Username</Form.Row> : ""
+            }
             <Button type="submit">Sing Up</Button>
         </Form>
     );
@@ -220,7 +234,7 @@ function ModalLog(props) {
     );
 }
 
-export class SignInSignUp extends Component {   
+export class SignInSignUp extends Component {  
     render(){
         const { next_step } = this.props;
         return <ModalLog next_step={next_step}/>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Form } from 'react-bootstrap';
 import { SignInSignUp } from '../signin-signup';
-import { ShoppingCar } from '../shopping-car'
+import { CarCounter } from '../shopping-car'
 
 export default function Header(props) {
 
@@ -19,7 +19,7 @@ export default function Header(props) {
                     (user !== null) ? <div className="LogIn"><span>Welcome: {`${user.first_name} ${user.last_name}`}</span> <Nav.Link className="logOut" href="#" onClick={log_out}>Log Out</Nav.Link></div>
                     : <SignInSignUp next_step={log_in}/>
                 }
-                <ShoppingCar />
+                <CarCounter />
             </Form>
         </Navbar>
     );

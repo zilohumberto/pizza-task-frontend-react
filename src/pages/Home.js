@@ -25,19 +25,15 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-
         const token = getToken();
         if(token != null && token.User != null)
         {
-            this.setState({ user: token.User });
+            this.setState({ user: token.User })
         }
-
         if(this.state.step === 0)
             this.get_pizzas();
     }
-
     get_pizzas() {
-
         fetch(url_get_pizzas)                   
             .then(res => res.json())
             .catch(error => {
@@ -49,8 +45,7 @@ export default class Home extends Component {
             })
     }
 
-    get_sizes() {
-        
+    get_sizes() {        
         fetch(url_get_sizes)                   
             .then(res => res.json())
             .catch(error => {
@@ -82,19 +77,19 @@ export default class Home extends Component {
             return <p>{error.message}</p>;
         }
         let breadcrumb = <Breadcrumb>
-            <Breadcrumb.Item active>Home</Breadcrumb.Item>
-        </Breadcrumb>
+                            <Breadcrumb.Item active>Home</Breadcrumb.Item>
+                        </Breadcrumb>
         switch(this.state.step) {
             case 0: return <div>
                     {breadcrumb}
                     <Spinner 
-                                animation="border"
-                                className="spinner-border"
-                            />
+                        animation="border"
+                        className="spinner-border"
+                    />
                 </div>
             case 1:
                 return <React.Fragment>
-                                <PizzaList 
+                            <PizzaList 
                                 pizzas={this.state.pizzas}
                                 sizes={this.state.sizes}
                                 ingredients={this.state.ingredients}

@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import { ContactList } from '../contact-list'
-import { url_user_contact } from '../../constants/api_url'
+import { url_users_contact } from '../../constants/api_url'
 
 function FormContact(props) {
 
@@ -33,7 +33,7 @@ function FormContact(props) {
                     }
             }
 
-            fetch(url_user_contact, param)
+            fetch(url_users_contact, param)
                 .then(res => res.json())
                 .then(result => {
                         props.next_contact(result);

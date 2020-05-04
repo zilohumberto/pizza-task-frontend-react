@@ -3,6 +3,8 @@ import { PizzaItem } from '../pizza-item';
 import Topping from '../topping/topping';
 import User  from '../users/users';
 import { Row, Col, Badge, Button } from 'react-bootstrap'
+import { getOrder, deleteOrder } from '../../helper/order_cookie_helper';
+import { url_orders_order } from '../../constants/api_url';
 
 
 export class PizzaList extends Component {
@@ -10,15 +12,33 @@ export class PizzaList extends Component {
     constructor(props){
         super(props);
 
-        this.state = 
-        { 
+        this.state = { 
             step: 1,
             pizza:{},
             price:{},
             ingredients: props.ingredients,
             user: props.user,
-            order:null,
+            order: null,
         };
+    }
+
+    componentDidMount() {
+        const cookieOrder = getOrder();
+        if(cookieOrder !== null && cookieOrder !== undefined) {
+            
+            fetch(`${url_orders_order}?id=${cookieOrder.orderId}`)
+                .then(res => res.json())
+                .catch(error => {
+                    console.log("Error");
+                })
+                .then((response) => {
+                    if(response.length > 0) {
+                        this.setState({ order:response[0] });
+                    } else {
+                        deleteOrder();
+                    }
+                });
+        }
     }
 
     handlerDetailPizza = (price, pizza) => {
@@ -34,18 +54,8 @@ export class PizzaList extends Component {
     }
     
     render(){
-
         const { pizzas, sizes } = this.props;
         let finalize
-        if (this.state.order !== null){
-            debugger;
-            finalize = <Button 
-                size="sm"
-                variant="primary" 
-                onClick={this.handleFinalizePurchase}>
-                    Finalize purchase
-            </Button>
-        }
         switch (this.state.step) {
             case 1:
                 return <React.Fragment>

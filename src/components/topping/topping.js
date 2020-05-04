@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Form, Media, Badge, Card, Breadcrumb, Spinner } from 'react-bootstrap';
-import { url_orders_order, url_post_command } from '../../constants/api_url'
+import { url_orders_order, url_post_command } from '../../constants/api_url';
+import { setOrder, getOrder } from '../../helper/order_cookie_helper';
 
 export default class Topping extends Component {
     
@@ -79,9 +80,12 @@ export default class Topping extends Component {
         .then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(response => {
+            let dataCookie = getOrder();
+            dataCookie.amount++;
+            setOrder(dataCookie);
+
             this.state.next_step(order);
         });
-
     }
 
     HandlerCompleteOrder=()=>{
@@ -91,7 +95,14 @@ export default class Topping extends Component {
         if(this.props.order == null) {
             this.saveOrder()
                 .then(order => {
-                this.saveCommand(order);
+
+                    const data = {
+                        orderId: order.id,
+                        amount: 0
+                    }
+
+                    setOrder(data)
+                    this.saveCommand(order);
                 })
                 .catch(err => console.log('There was an error:' + err)) 
         }else {

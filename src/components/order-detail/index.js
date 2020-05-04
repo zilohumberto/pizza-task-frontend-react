@@ -3,6 +3,7 @@ import { url_orders_order, url_orders_bill } from '../../constants/api_url'
 import { Table, Button, Modal, Spinner, Badge } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom'
 import { getToken } from '../../helper/auth-helper'
+import { deleteOrder } from '../../helper/order_cookie_helper'
 
 function ModelConfirmOrder(props) {
     
@@ -40,13 +41,18 @@ export class OrderDetail extends Component {
 
     constructor(props) {
         super(props);
+
+        deleteOrder();
+
         this.state = {
-            steps:1,
-            isLoading: true,
+            steps: 0,
+            isLoading: false,
             order: this.props.order,
             showModal: false,
             bill: {},
             need_confirm: this.props.need_confirm,
+            no_pizza: false,
+            cookie_token: null
         }
     }
 
@@ -54,18 +60,27 @@ export class OrderDetail extends Component {
         const token = getToken();
         if(token != null)
         {
-            const token = getToken();
-            this.get_bill(token);    
-        }else{
-            this.get_bill();
+            this.setState({cookie_token:token})
+        }
+        if (this.state.order.command_set !== null && this.state.order.command_set.length > 0 ){
+            if(this.state.need_confirm === true){
+                this.get_bill()
+            }else{
+                this.setState({ steps: 1 });
+            }
         }
     }
-    get_bill=(token)=>{
+
+    get_bill=()=>{
+        const {cookie_token} = this.state;
+        this.setState({ isLoading: true });
         let headers = {
             'Content-Type': 'application/json'
         }
-        if (token !== undefined){
-            headers['Authorization'] = `Token ${token.token}`
+        if (cookie_token !== null){
+            if (cookie_token !== undefined){
+                headers['Authorization'] = `Token ${cookie_token.token}`
+            }
         }
         fetch(url_orders_bill, {
             method: 'POST',
@@ -74,7 +89,7 @@ export class OrderDetail extends Component {
         })                   
             .then(res => res.json())
             .then((data) => {
-                this.setState({ bill: data, isLoading: false });
+                this.setState({ bill: data, isLoading: false, steps: 2});
             })
     }
 
@@ -94,7 +109,7 @@ export class OrderDetail extends Component {
         })                   
             .then(res => res.json())
             .then((data) => {
-                this.setState({ isLoading: false, steps: 2 });
+                this.setState({ isLoading: false, steps: 3 });
             })
     }
 
@@ -121,40 +136,43 @@ export class OrderDetail extends Component {
                         className="spinner-border"
                     />;
         switch(steps) {
+            default:
+                return <><h1>No pizza </h1></>
             case 1:
-                return (
-                    <div>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>Pizza</th>
-                                    <th>Topping</th>
-                                    <th>Size</th>
-                                    <th>Units</th>
-                                    <th>Total</th>
+                return <><button onClick={this.get_bill}> Show Bill</button></>
+            case 2: 
+                return <>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Pizza</th>
+                                <th>Topping</th>
+                                <th>Size</th>
+                                <th>Units</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.bill.items.map(item => {
+                                return <tr key={item.name}>
+                                    <td>{this.get_pizza_name(item)}</td>
+                                    <td>{(item.is_pizza) ? "" : item.name}</td>
+                                    <td>{(item.is_pizza) ? item.size : ""}</td>
+                                    <td>x {item.units}</td>
+                                    <td>{item.total}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.bill.items.map(item => {
-                                    return <tr key={item.name}>
-                                        <td>{this.get_pizza_name(item)}</td>
-                                        <td>{(item.is_pizza) ? "" : item.name}</td>
-                                        <td>{(item.is_pizza) ? item.size : ""}</td>
-                                        <td>{item.units}</td>
-                                        <td>{item.total}</td>
-                                    </tr>
-                                })}
-                            </tbody>
-                        </Table>
-                        <h1>Total: {this.state.bill.total}</h1>
-                        {confirm_button}
-                    </div>
-                )
-            case 2:
-                return <ModelConfirmOrder show={true} setRedirect={this.setRedirect} />;
-
+                            })}
+                        </tbody>
+                    </Table>
+                    <h1>Total: {this.state.bill.total}</h1>
+                    {confirm_button}
+                </>
             case 3:
+                return <ModelConfirmOrder show={true} setRedirect={this.setRedirect} />;
+            case 4:
                 return <Redirect to='/' />;
+
+
         }
     }
 }
