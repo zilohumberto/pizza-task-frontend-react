@@ -1,4 +1,4 @@
- const api_url = '';
+const api_url = 'https://thepizzatask-by-humberto.herokuapp.com/';
 
 
 export const url_get_pizzas = `${api_url}pizzas/pizza/`
